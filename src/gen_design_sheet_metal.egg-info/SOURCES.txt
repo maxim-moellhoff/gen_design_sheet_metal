@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+src/gen_design_sheet_metal/__init__.py
+src/gen_design_sheet_metal/__main__.py
+src/gen_design_sheet_metal.egg-info/PKG-INFO
+src/gen_design_sheet_metal.egg-info/SOURCES.txt
+src/gen_design_sheet_metal.egg-info/dependency_links.txt
+src/gen_design_sheet_metal.egg-info/requires.txt
+src/gen_design_sheet_metal.egg-info/top_level.txt
+src/gen_design_sheet_metal/geometry/__init__.py
+src/gen_design_sheet_metal/geometry/squares.py

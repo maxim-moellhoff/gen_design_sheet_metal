@@ -1,0 +1,29 @@
+plot:
+  Rectangle: True
+
+  Planes: True
+  planeA_color: "#EC11E5"
+  planeB_color: "#F0AC53"
+  
+  Intersections: True
+
+  Bends: False
+
+  Bending Points: True
+  BP1_color: "red"
+  BP2_color: "blue"
+  
+  Flange: True
+  FPA1_color: "green"
+  FPA2_color: "green"
+  FPB1_color: "orange"
+  FPB2_color: "orange"
+
+  Tabs: True
+  Quads: True
+
+  debug_labels: True   # toggle labels for bends, BPs, tabs, planes
+
+
+3D: True
+2D: False

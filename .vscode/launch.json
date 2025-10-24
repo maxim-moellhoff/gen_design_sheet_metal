@@ -1,0 +1,14 @@
+{
+    "version": "0.3",
+    "configurations": [
+        {
+            "name": "Run gen_design_sheet_metal",
+            "type": "python",
+            "request": "launch",
+            "module": "gen_design_sheet_metal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        }
+    ]
+}
