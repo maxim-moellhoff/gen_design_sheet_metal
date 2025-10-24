@@ -2,9 +2,7 @@ import time
 start_time = time.time()
 
 import pyvista as pv
-import numpy as np
 import yaml
-from pathlib import Path
 
 from user_input import rectangles
 from gen_design_sheet_metal.design_exploration.state import State
