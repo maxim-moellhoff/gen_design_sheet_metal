@@ -1,3 +1,5 @@
+![Representative image of the results.](assets/images/example.png)
+
 # How it works
 
 
