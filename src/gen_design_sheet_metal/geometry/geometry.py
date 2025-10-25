@@ -2,7 +2,7 @@ from gen_design_sheet_metal.design_rules import min_dist_mount_bend, min_flange_
 import numpy as np
 import pyvista as pv
 from types import SimpleNamespace
-from gen_design_sheet_metal.geometry.utilities import normalize, tangent_points_to_circle, line_intersection, point_in_triangle, closest_points_between_lines
+from gen_design_sheet_metal.geometry.utilities import normalize, closest_points_between_lines, perp_toward_plane
 
 def determine_fourth_point(rectangles):
     """
@@ -68,6 +68,9 @@ def calculate_intersection(planes):
     })
     return intersections
 
+def collision_tab_bend(bend, rectangles):
+    return False
+
 def create_bending_point(point0, point1, intersection):
     point_on_intersection = intersection[0]['point']
     direction_intersection = intersection[0]['direction']
@@ -90,46 +93,35 @@ def create_bending_point(point0, point1, intersection):
 def calculate_flange_points(bends, planes, bending_points, flange_width=min_flange_width):
     flange_points = {}
     for bend in bends:
-        bend_id = bend.get("id")
-        BP = bending_points.get(bend_id)
+        BP = bending_points
         if BP is None:
             continue
-        BP0, BP1, BP2 = BP["BP0"], BP["BP1"], BP["BP2"]
+        BP1, BP2 = BP["BP1"], BP["BP2"]
+        
         bend_dir = normalize(BP2 - BP1)
+        
         if np.linalg.norm(bend_dir) < 1e-9:
             continue
-        mid = (BP1 + BP2) / 2.0
-        planeA_id, planeB_id = bend.get("planes")
-        planeA = planes[planeA_id]
+        
+        # BP0 = (BP1 + BP2) / 2.0
+        planeA, planeB = planes
         planeB = planes[planeB_id]
-
-        def perp_toward_plane(plane):
-            n = plane.orientation
-            perp = np.cross(n, bend_dir)
-            if np.linalg.norm(perp) < 1e-9:
-                perp = np.cross(bend_dir, np.array([1,0,0]))
-                if np.linalg.norm(perp) < 1e-9:
-                    perp = np.cross(bend_dir, np.array([0,1,0]))
-            perp = normalize(perp)
-            sign = np.sign(np.dot(plane.position - mid, perp))
-            if sign == 0:
-                sign = 1.0
-            return perp * sign
 
         perpA = perp_toward_plane(planeA)
         perpB = perp_toward_plane(planeB)
         half = flange_width / 2.0
 
-        FPA1, FPA2 = BP1 + perpA * half, BP2 + perpA * half
-        FPB1, FPB2 = BP1 + perpB * half, BP2 + perpB * half
+        FP01, FP02 = BP1 + perpA * half, BP2 + perpA * half
+        FP11, FP12 = BP1 + perpB * half, BP2 + perpB * half
         BPA1, BPA2 = BP1.copy(), BP2.copy()
         BPB1, BPB2 = BP1.copy(), BP2.copy()
 
-        planeA_quad = np.array([FPA1, FPA2, BPA2, BPA1])
-        planeB_quad = np.array([FPB1, FPB2, BPB2, BPB1])
+        # planeA_quad = np.array([FP01, FP02, BPA2, BPA1])
+        # planeB_quad = np.array([FP11, FP12, BPB2, BPB1])
 
-        flange_points[bend_id] = {"BP0": BP0, "BP1": BP1, "BP2": BP2, "FPA1": FPA1, "FPA2": FPA2,
-                                  "FPB1": FPB1, "FPB2": FPB2,
-                                  "planeA_quad": planeA_quad, "planeB_quad": planeB_quad}
+        # flange_points[bend_id] = {"BP0": BP0, "BP1": BP1, "BP2": BP2, "FPA1": FPA1, "FPA2": FPA2,
+        #                           "FPB1": FPB1, "FPB2": FPB2,
+        #                           "planeA_quad": planeA_quad, "planeB_quad": planeB_quad}
+        flange_points = [FP01, FP02, FP11, FP12]
 
     return flange_points

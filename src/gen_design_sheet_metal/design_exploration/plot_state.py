@@ -38,7 +38,6 @@ def plot_state(state, plotter=None, cfg=None, solution_idx=None, len_solutions=N
         for intersection in state.intersections:
             point_on_line = intersection.get("point")
             d = normalize(intersection.get("direction", np.array([1,0,0])))
-            intersection_id = intersection.get("id", "N/A")
 
             if point_on_line is not None and d is not None:
                 # create line along bend direction
@@ -47,7 +46,7 @@ def plot_state(state, plotter=None, cfg=None, solution_idx=None, len_solutions=N
 
                 # optionally label the bend
                 if cfg.get('debug_labels', False):
-                    plotter.add_point_labels(np.array([point_on_line]), [intersection_id], font_size=20, point_color="#E9DA38", text_color="black")
+                    plotter.add_point_labels(np.array([point_on_line]), ["Intersection"], font_size=20, point_color="#E9DA38", text_color="black")
 
 
     if cfg.get('Bends', True):
@@ -67,6 +66,19 @@ def plot_state(state, plotter=None, cfg=None, solution_idx=None, len_solutions=N
                     plotter.add_point_labels(np.array([point_on_line]), [bend_id], font_size=20, point_color="#E9DA38", text_color="black")
 
     # --- Flanges and BP points ---
+    # Corner Points
+    if cfg.get('Corner Points', True):
+        CP00, CP01, CP10, CP11 = state.corner_points
+        plotter.add_points(CP00, color=cfg.get('BP1_color','red'), point_size=20)
+        plotter.add_points(CP01, color=cfg.get('BP2_color','blue'), point_size=20)
+        plotter.add_points(CP10, color=cfg.get('BP1_color','red'), point_size=20)
+        plotter.add_points(CP11, color=cfg.get('BP2_color','blue'), point_size=20)
+        if cfg.get('debug_labels', True):
+            plotter.add_point_labels(CP00, ["CP00"], font_size=20, point_color='red', text_color='red')
+            plotter.add_point_labels(CP01, ["CP01"], font_size=20, point_color='blue', text_color='blue')
+            plotter.add_point_labels(CP10, ["CP10"], font_size=20, point_color='red', text_color='red')
+            plotter.add_point_labels(CP11, ["CP11"], font_size=20, point_color='blue', text_color='blue')
+
     # BP points
     if cfg.get('Bending Points', True):
         BP1 = state.bending_points[0]
@@ -77,13 +89,13 @@ def plot_state(state, plotter=None, cfg=None, solution_idx=None, len_solutions=N
             plotter.add_point_labels(BP1, ["BP1"], font_size=20, point_color='red', text_color='red')
             plotter.add_point_labels(BP2, ["BP2"], font_size=20, point_color='blue', text_color='blue')
 
+
+
+    # Solution ID
     if solution_idx is not None and len_solutions is not None:
         counter_text = f"Solution: {solution_idx}/{len_solutions}"
         # position options: upper_left, upper_right, lower_left, lower_right
-        plotter.add_text(counter_text, position="upper_left",
-                            font_size=14, color="black", shadow=False)
-
-
+        plotter.add_text(counter_text, position="upper_left", font_size=14, color="black", shadow=False)
 
     # --- Finish plot ---
     plotter.show_grid()
