@@ -3,7 +3,7 @@ import pyvista as pv
 import numpy as np
 from gen_design_sheet_metal.design_rules import min_dist_mount_bend
 
-def plot_state(state, plotter=None, cfg=None, solution_idx=None, len_solutions=None):
+def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solutions=None):
     """
     Unified plotting function for flanges, tabs, BP points, and optional plane/debug info.
     """
@@ -153,3 +153,28 @@ def plot_state(state, plotter=None, cfg=None, solution_idx=None, len_solutions=N
                         plotter.add_point_labels([mid], [tab_label], font_size=20, point_color='yellow', text_color='black')
 
     """
+
+def plot_state(plotter, plot_cfg, solutions):
+    """
+    Create interactive plotting window, which can be cycled through to explore all the solutions.
+    """
+    
+    solution_idx = [0]
+    def show_solution(idx):
+        plotter.clear()
+        state = solutions[idx]
+        #mesh = assemble_mesh(state)
+        plot_elements(state, plotter=plotter, cfg=plot_cfg, solution_idx=solution_idx, len_solutions=len(solutions))
+
+    def key_press_callback(key):
+        if key == 'Right':
+            solution_idx[0] = (solution_idx[0] + 1) % len(solutions)
+            show_solution(solution_idx[0])
+        elif key == 'Left':
+            solution_idx[0] = (solution_idx[0] - 1) % len(solutions)
+            show_solution(solution_idx[0])
+
+    plotter.add_key_event("Right", lambda: key_press_callback("Right"))
+    plotter.add_key_event("Left", lambda: key_press_callback("Left"))
+    show_solution(solution_idx[0])
+    plotter.show()

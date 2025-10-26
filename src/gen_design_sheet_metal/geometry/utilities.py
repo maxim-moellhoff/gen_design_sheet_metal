@@ -1,5 +1,16 @@
 import numpy as np
 
+def convert_to_float64(items):
+    """Convert all list-based item points to numpy float64 arrays."""
+    converted = []
+    for item in items:
+        new_item = {}
+        for key, value in item.items():
+            arr = np.array(value, dtype=np.float64)
+            new_item[key] = arr
+        converted.append(new_item)
+    return converted
+
 def normalize(v):
     n = np.linalg.norm(v)
     if n < 1e-9:
