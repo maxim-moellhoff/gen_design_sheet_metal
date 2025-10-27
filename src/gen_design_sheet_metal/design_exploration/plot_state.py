@@ -95,7 +95,7 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
             plotter.add_point_labels(BP2, ["BP2"], font_size=standard_font_size, point_color='blue', text_color='blue')
 
     if cfg.get('Flange', True):
-        for pt_name in ["FP01", "FP02", "FP11", "FP12"]:
+        for pt_name in ["FPA1", "FPA2", "FPB1", "FPB2"]:
                 pt = np.array([state.bends[pt_name]])
                 color = cfg.get(f'{pt_name}_color', 'green')
                 plotter.add_points(pt, color=color, point_size=8)

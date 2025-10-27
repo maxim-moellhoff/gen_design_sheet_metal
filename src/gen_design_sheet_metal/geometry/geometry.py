@@ -109,16 +109,15 @@ def create_bending_point(point0, point1, intersection):
         
     return BP
 
-def calculate_flange_points(BP1, BP2, plane0, plane1, flange_width=min_flange_width):
-    # bend_dir = normalize(BP2 - BP1)
-    
+def calculate_flange_points(BP1, BP2, planeA, planeB, flange_width=min_flange_width):
     BP0 = (BP1 + BP2) / 2.0
-    perpA = perp_toward_plane(plane0, BP0)
-    perpB = perp_toward_plane(plane1, BP1)
+    bend_dir = normalize(BP2 - BP1)
+    perpA = perp_toward_plane(planeA, BP0, bend_dir)
+    perpB = perp_toward_plane(planeB, BP0, bend_dir)
     half = flange_width / 2.0
 
-    FP01, FP02 = BP1 + perpA * half, BP2 + perpA * half
-    FP11, FP12 = BP1 + perpB * half, BP2 + perpB * half
+    FPA1, FPA2 = BP1 + perpA * half, BP2 + perpA * half
+    FPB1, FPB2 = BP1 + perpB * half, BP2 + perpB * half
 
     # planeA_quad = np.array([FP01, FP02, BPA2, BPA1])
     # planeB_quad = np.array([FP11, FP12, BPB2, BPB1])
@@ -126,9 +125,7 @@ def calculate_flange_points(BP1, BP2, plane0, plane1, flange_width=min_flange_wi
     # flange_points[bend_id] = {"BP0": BP0, "BP1": BP1, "BP2": BP2, "FPA1": FPA1, "FPA2": FPA2,
     #                           "FPB1": FPB1, "FPB2": FPB2,
     #                           "planeA_quad": planeA_quad, "planeB_quad": planeB_quad}
-    flange_points = [FP01, FP02, FP11, FP12]
-
-    return FP01, FP02, FP11, FP12
+    return FPA1, FPA2, FPB1, FPB2
 
 def turn_points_into_element(points):
     points = np.array(points, dtype=np.float64)

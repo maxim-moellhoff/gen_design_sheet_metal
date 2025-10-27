@@ -10,7 +10,8 @@ dependencies = [
     "numpy",
     "pyvista",
     "PyYAML",
-    "dataclasses"
+    "dataclasses",
+    "shapely"
 ]
 
 [tool.setuptools]

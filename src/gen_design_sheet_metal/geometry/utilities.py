@@ -40,9 +40,9 @@ def closest_points_between_lines(p1, d1, p2, d2):
 
     return pt1, pt2, t, s
 
-def perp_toward_plane(plane, BP0):
-    n = plane.position
-    bend_dir = plane.orientation
+def perp_toward_plane(plane, BP0, bend_dir):
+    n = plane.orientation
+    # bend_dir = plane.orientation
     perp = np.cross(n, bend_dir)
     if np.linalg.norm(perp) < 1e-9:
         perp = np.cross(bend_dir, np.array([1,0,0]))
@@ -53,3 +53,28 @@ def perp_toward_plane(plane, BP0):
     if sign == 0:
         sign = 1.0
     return perp * sign
+
+from shapely.geometry import LineString, Polygon
+
+def check_cross_within(CPA1, CPA2, CPB2, CPB1):
+    """
+    Check if lines CP1 (CPA1→CPB1) and CP2 (CPA2→CPB2) intersect
+    within the area bounded by the four points [CPA1, CPA2, CPB2, CPB1].
+
+    Points should be (x, y) tuples.
+    Returns True if they intersect inside the polygon, else False.
+    """
+    # Define the polygon
+    polygon = Polygon([CPA1, CPA2, CPB2, CPB1])
+
+    # Define the lines
+    CP1 = LineString([CPA1, CPB1])
+    CP2 = LineString([CPA2, CPB2])
+
+    # Find intersection
+    intersection = CP1.intersection(CP2)
+
+    # Check if intersection exists and lies inside polygon
+    if not intersection.is_empty and polygon.contains(intersection):
+        return True
+    return False
