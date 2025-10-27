@@ -1,6 +1,6 @@
 ![Representative image of the results.](assets/images/example.png)
 
-THIS PROJECT IS STILL IN UNFINISHED!
+THIS PROJECT IS STILL UNFINISHED!
 
 # How it works
 
