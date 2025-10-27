@@ -1,5 +1,7 @@
 ![Representative image of the results.](assets/images/example.png)
 
+THIS PROJECT IS STILL IN UNFINISHED!
+
 # How it works
 
 

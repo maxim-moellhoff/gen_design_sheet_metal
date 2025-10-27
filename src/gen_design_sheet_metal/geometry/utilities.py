@@ -56,24 +56,24 @@ def perp_toward_plane(plane, BP0, bend_dir):
 
 from shapely.geometry import LineString, Polygon
 
-def check_cross_within(CPA1, CPA2, CPB2, CPB1):
+def check_cross_within(CPA1, CPA2, CPB2, CPB1, BP1, BP2):
     """
-    Check if lines CP1 (CPA1→CPB1) and CP2 (CPA2→CPB2) intersect
-    within the area bounded by the four points [CPA1, CPA2, CPB2, CPB1].
+    Check if polylines CP1 (CPA1→BP1→CPB1) and CP2 (CPA2→BP2→CPB2)
+    intersect within the polygon defined by [CPA1, CPA2, CPB2, CPB1].
 
     Points should be (x, y) tuples.
     Returns True if they intersect inside the polygon, else False.
     """
     # Define the polygon
     polygon = Polygon([CPA1, CPA2, CPB2, CPB1])
-
-    # Define the lines
-    CP1 = LineString([CPA1, CPB1])
-    CP2 = LineString([CPA2, CPB2])
-
+    
+    # Define the polylines
+    CP1 = LineString([CPA1, BP1, CPB1])
+    CP2 = LineString([CPA2, BP2, CPB2])
+    
     # Find intersection
     intersection = CP1.intersection(CP2)
-
+    
     # Check if intersection exists and lies inside polygon
     if not intersection.is_empty and polygon.contains(intersection):
         return True

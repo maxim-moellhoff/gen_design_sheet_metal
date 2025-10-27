@@ -6,13 +6,12 @@ plot:
   Rectangle: True
   Corner Points: True
   Planes: False
-  Intersections: True
-  Bends: False
+  Bends: True
   Bending Points: True
   Flange: True
   Elements: True
 
-  point_size: 20
+  point_size: 30
   font_size: 30
 
   planeA_color: "#EC11E5"
