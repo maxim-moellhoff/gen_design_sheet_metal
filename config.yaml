@@ -8,6 +8,9 @@ plot:
   Flange: True
   Quads: True
 
+  point_size: 20
+  font_size: 30
+
   planeA_color: "#EC11E5"
   planeB_color: "#F0AC53"
   

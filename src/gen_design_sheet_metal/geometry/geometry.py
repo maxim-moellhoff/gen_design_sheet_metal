@@ -90,38 +90,23 @@ def create_bending_point(point0, point1, intersection):
         
     return BP
 
-def calculate_flange_points(bends, planes, bending_points, flange_width=min_flange_width):
-    flange_points = {}
-    for bend in bends:
-        BP = bending_points
-        if BP is None:
-            continue
-        BP1, BP2 = BP["BP1"], BP["BP2"]
-        
-        bend_dir = normalize(BP2 - BP1)
-        
-        if np.linalg.norm(bend_dir) < 1e-9:
-            continue
-        
-        # BP0 = (BP1 + BP2) / 2.0
-        planeA, planeB = planes
-        planeB = planes[planeB_id]
+def calculate_flange_points(BP1, BP2, plane0, plane1, flange_width=min_flange_width):
+    # bend_dir = normalize(BP2 - BP1)
+    
+    BP0 = (BP1 + BP2) / 2.0
+    perpA = perp_toward_plane(plane0, BP0)
+    perpB = perp_toward_plane(plane1, BP1)
+    half = flange_width / 2.0
 
-        perpA = perp_toward_plane(planeA)
-        perpB = perp_toward_plane(planeB)
-        half = flange_width / 2.0
+    FP01, FP02 = BP1 + perpA * half, BP2 + perpA * half
+    FP11, FP12 = BP1 + perpB * half, BP2 + perpB * half
 
-        FP01, FP02 = BP1 + perpA * half, BP2 + perpA * half
-        FP11, FP12 = BP1 + perpB * half, BP2 + perpB * half
-        BPA1, BPA2 = BP1.copy(), BP2.copy()
-        BPB1, BPB2 = BP1.copy(), BP2.copy()
+    # planeA_quad = np.array([FP01, FP02, BPA2, BPA1])
+    # planeB_quad = np.array([FP11, FP12, BPB2, BPB1])
 
-        # planeA_quad = np.array([FP01, FP02, BPA2, BPA1])
-        # planeB_quad = np.array([FP11, FP12, BPB2, BPB1])
+    # flange_points[bend_id] = {"BP0": BP0, "BP1": BP1, "BP2": BP2, "FPA1": FPA1, "FPA2": FPA2,
+    #                           "FPB1": FPB1, "FPB2": FPB2,
+    #                           "planeA_quad": planeA_quad, "planeB_quad": planeB_quad}
+    flange_points = [FP01, FP02, FP11, FP12]
 
-        # flange_points[bend_id] = {"BP0": BP0, "BP1": BP1, "BP2": BP2, "FPA1": FPA1, "FPA2": FPA2,
-        #                           "FPB1": FPB1, "FPB2": FPB2,
-        #                           "planeA_quad": planeA_quad, "planeB_quad": planeB_quad}
-        flange_points = [FP01, FP02, FP11, FP12]
-
-    return flange_points
+    return FP01, FP02, FP11, FP12

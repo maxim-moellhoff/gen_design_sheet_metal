@@ -40,8 +40,9 @@ def closest_points_between_lines(p1, d1, p2, d2):
 
     return pt1, pt2, t, s
 
-def perp_toward_plane(plane):
-    n = plane.orientation
+def perp_toward_plane(plane, BP0):
+    n = plane.position
+    bend_dir = plane.orientation
     perp = np.cross(n, bend_dir)
     if np.linalg.norm(perp) < 1e-9:
         perp = np.cross(bend_dir, np.array([1,0,0]))

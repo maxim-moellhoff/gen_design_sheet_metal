@@ -19,14 +19,13 @@ def main():
     plotter = pv.Plotter()
     
     # ------ Initial Calculations ------
-    rectangles = convert_to_float64(items=[rect0, rect1])
-    rectangles = determine_fourth_point(rectangles)
+    rectangles_input = convert_to_float64(items=[rect0, rect1])
+    rectangles = determine_fourth_point(rectangles_input)
     planes = calculate_planes(rectangles)
     intersection = calculate_intersection(planes)
 
     # ------ Design Exploration ------
     state = State(rectangles, planes, intersection)
-
     solutions = []
     
     if not collision_tab_bend(intersection, rectangles):

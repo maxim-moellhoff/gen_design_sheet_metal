@@ -6,10 +6,10 @@ class State:
         self.planes = planes
         self.intersections = intersections
         self.corner_points = corner_points or []
-        self.bends = bends or []
-        self.bending_points = bending_points or []
-        self.tabs = tabs or []
-        self.flange_points = flange_points or {}
+        self.bends = bends or {}
+        # self.bending_points = bending_points or []
+        # self.tabs = tabs or []
+        # self.flange_points = flange_points or {}
 
     def copy(self):
         return State(
@@ -17,10 +17,10 @@ class State:
             planes=copy.deepcopy(self.planes),
             intersections=copy.deepcopy(self.intersections),
             corner_points=copy.deepcopy(self.corner_points),
-            bends=copy.deepcopy(self.bends),
-            bending_points=copy.deepcopy(self.bending_points),
-            tabs=copy.deepcopy(self.tabs),
-            flange_points=copy.deepcopy(self.flange_points)
+            bends=copy.deepcopy(self.bends)
+            # bending_points=copy.deepcopy(self.bending_points),
+            # tabs=copy.deepcopy(self.tabs),
+            # flange_points=copy.deepcopy(self.flange_points)
         )
 
     def __repr__(self):
