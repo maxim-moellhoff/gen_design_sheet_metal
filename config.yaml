@@ -5,7 +5,7 @@ design_exploration:
 plot:
   Rectangle: True
   Corner Points: True
-  Planes: True
+  Planes: False
   Intersections: True
   Bends: False
   Bending Points: True
