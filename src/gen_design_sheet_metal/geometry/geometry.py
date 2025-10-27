@@ -6,15 +6,34 @@ from gen_design_sheet_metal.geometry.utilities import normalize, closest_points_
 
 def determine_fourth_point(rectangles):
     """
-    Given three points (A, B, C), compute fourth point D.
-    Assumes points are arbitrary corners of a rectangle.
+    Given three points (A, B, C), compute fourth point D and reorder the points
+    in circular order (A, B, D, C) so the rectangle is not twisted.
     """
-    for _, rect in enumerate(rectangles):
+    for rect in rectangles:
         A, B, C = rect["pointA"], rect["pointB"], rect["pointC"]
+
+        # Compute vectors
         AB = B - A
         AC = C - A
+
+        # Compute normal (for consistent orientation)
+        normal = np.cross(AB, AC)
+
+        # If AB and AC are swapped (zigzag), flip AC to keep CCW order
+        if np.dot(np.cross(AB, AC), normal) < 0:
+            # Swap B and C if needed
+            B, C = C, B
+            AB = B - A
+            AC = C - A
+
+        # Compute D in the proper rectangular order
         D = A + AB + AC
-        rect["pointD"] = D 
+
+        # Overwrite in consistent circular order (A, B, D, C)
+        rect["pointA"] = A
+        rect["pointB"] = B
+        rect["pointC"] = D
+        rect["pointD"] = C
 
     return rectangles
 
@@ -110,3 +129,16 @@ def calculate_flange_points(BP1, BP2, plane0, plane1, flange_width=min_flange_wi
     flange_points = [FP01, FP02, FP11, FP12]
 
     return FP01, FP02, FP11, FP12
+
+def turn_points_into_element(points):
+    points = np.array(points, dtype=np.float64)
+
+    n_points = len(points)
+    if n_points not in (3, 4):
+        raise ValueError(f"Expected 3 or 4 points, got {n_points}")
+
+    # PyVista faces: [n_points, p0, p1, ..., pN]
+    faces = np.hstack([[n_points], np.arange(n_points)])
+    mesh = pv.PolyData(points, faces)
+
+    return mesh

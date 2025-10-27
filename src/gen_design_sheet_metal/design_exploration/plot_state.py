@@ -22,7 +22,7 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
             pts = np.array([rect["pointA"], rect["pointB"], rect["pointC"], rect["pointD"]])
 
             # Define the face: first value = number of points in the face
-            faces = np.hstack([[4, 0, 1, 3, 2]])
+            faces = np.hstack([[4, 0, 1, 2, 3]])
 
             # Create the PyVista mesh
             rectangle_mesh = pv.PolyData(pts, faces)
@@ -106,6 +106,17 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
         # if cfg.get('debug_labels', True):
         #     plotter.add_point_labels(BP1, ["BP1"], font_size=standard_font_size, point_color='red', text_color='red')
         #     plotter.add_point_labels(BP2, ["BP2"], font_size=standard_font_size, point_color='blue', text_color='blue')
+
+    if cfg.get('Elements', True):
+        for i, element in enumerate(state.elements):
+            plotter.add_mesh(
+                element,
+                color="orange",
+                opacity=0.8,
+                show_edges=True,
+                label=f"Element {i}"
+            )
+
 
     # Solution ID
     if solution_idx is not None and len_solutions is not None:

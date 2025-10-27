@@ -1,5 +1,5 @@
 design_exploration:
-  single_bend: False
+  single_bend: True
   double_bend : True
 
 plot:
@@ -10,7 +10,7 @@ plot:
   Bends: False
   Bending Points: True
   Flange: True
-  Quads: True
+  Elements: True
 
   point_size: 20
   font_size: 30

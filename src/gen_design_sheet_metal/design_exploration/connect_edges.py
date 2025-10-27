@@ -1,5 +1,5 @@
 import itertools
-from gen_design_sheet_metal.geometry.geometry import create_bending_point, calculate_flange_points
+from gen_design_sheet_metal.geometry.geometry import create_bending_point, calculate_flange_points, turn_points_into_element
 
 
 def one_bend(state, solutions):
@@ -11,6 +11,8 @@ def one_bend(state, solutions):
 
     rect0_combinations = list(itertools.permutations(rect0_points, 2))
     rect1_combinations = list(itertools.permutations(rect1_points, 2))
+
+    state.elements.append(turn_points_into_element(rect0_points))
 
     for pair0 in rect0_combinations:
         for pair1 in rect1_combinations:
@@ -27,6 +29,10 @@ def one_bend(state, solutions):
             # new_state.bending_points.extend([BP1, BP2])
             new_state.bends = ({"bend_id": 0, "bend": intersection, "BP1": BP1, "BP2": BP2, 
                                     "FP01": FP01, "FP02": FP02, "FP11": FP11, "FP12": FP12})
+            new_state.elements.append(turn_points_into_element([BP1, BP2, FP01, FP02]))
+            new_state.elements.append(turn_points_into_element([BP1, BP2, FP11, FP12]))
+            new_state.elements.append(turn_points_into_element(rect1_points))
+
 
             solutions.append(new_state)
 
