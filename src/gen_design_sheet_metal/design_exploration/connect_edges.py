@@ -25,7 +25,7 @@ def one_bend(state, solutions):
             BP2 = create_bending_point(CP01, CP11, intersection)
             FP01, FP02, FP11, FP12 = calculate_flange_points(BP1, BP2, plane0=new_state.planes[0], plane1=new_state.planes[1])
             # new_state.bending_points.extend([BP1, BP2])
-            new_state.bends = ({"bend_id": 0, "BP1": BP1, "BP2": BP2, 
+            new_state.bends = ({"bend_id": 0, "bend": intersection, "BP1": BP1, "BP2": BP2, 
                                     "FP01": FP01, "FP02": FP02, "FP11": FP11, "FP12": FP12})
 
             solutions.append(new_state)

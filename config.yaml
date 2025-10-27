@@ -1,3 +1,7 @@
+design_exploration:
+  single_bend: False
+  double_bend : True
+
 plot:
   Rectangle: True
   Corner Points: True
