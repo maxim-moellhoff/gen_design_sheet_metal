@@ -29,8 +29,8 @@ def one_bend(state, solutions):
             # new_state.bending_points.extend([BP1, BP2])
             new_state.bends = ({"bend_id": 0, "bend": intersection, "BP1": BP1, "BP2": BP2, 
                                     "FP01": FP01, "FP02": FP02, "FP11": FP11, "FP12": FP12})
-            new_state.elements.append(turn_points_into_element([BP1, BP2, FP01, FP02]))
-            new_state.elements.append(turn_points_into_element([BP1, BP2, FP11, FP12]))
+            new_state.elements.append(turn_points_into_element([BP1, FP01, FP02, BP2]))
+            new_state.elements.append(turn_points_into_element([BP1, FP11, FP12, BP2]))
             new_state.elements.append(turn_points_into_element(rect1_points))
 
 
