@@ -119,12 +119,6 @@ def calculate_flange_points(BP1, BP2, planeA, planeB, flange_width=min_flange_wi
     FPA1, FPA2 = BP1 + perpA * half, BP2 + perpA * half
     FPB1, FPB2 = BP1 + perpB * half, BP2 + perpB * half
 
-    # planeA_quad = np.array([FP01, FP02, BPA2, BPA1])
-    # planeB_quad = np.array([FP11, FP12, BPB2, BPB1])
-
-    # flange_points[bend_id] = {"BP0": BP0, "BP1": BP1, "BP2": BP2, "FPA1": FPA1, "FPA2": FPA2,
-    #                           "FPB1": FPB1, "FPB2": FPB2,
-    #                           "planeA_quad": planeA_quad, "planeB_quad": planeB_quad}
     return FPA1, FPA2, FPB1, FPB2
 
 def turn_points_into_element(points):

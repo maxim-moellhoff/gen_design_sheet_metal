@@ -8,7 +8,7 @@ from user_input import rect0, rect1
 from .design_exploration.state import State
 from .design_exploration.plot_state import plot_state
 from .geometry.utilities import convert_to_float64
-from .geometry.geometry import determine_fourth_point, calculate_planes, calculate_intersection, collision_tab_bend
+from .geometry.part_generation import determine_fourth_point, calculate_planes, calculate_intersection, collision_tab_bend
 from .design_exploration.connect_edges import one_bend, two_bends
 with open("config.yaml") as f:
     cfg = yaml.load(f, Loader=yaml.FullLoader)

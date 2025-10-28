@@ -56,25 +56,26 @@ def perp_toward_plane(plane, BP0, bend_dir):
 
 from shapely.geometry import LineString, Polygon
 
-def check_cross_within(CPA1, CPA2, CPB2, CPB1, BP1, BP2):
+def check_lines_cross(CPA1, CPA2, CPB1, CPB2, BP1, BP2):
     """
-    Check if polylines CP1 (CPA1→BP1→CPB1) and CP2 (CPA2→BP2→CPB2)
-    intersect within the polygon defined by [CPA1, CPA2, CPB2, CPB1].
+    Returns true, if the input is cross free, and therefore valid
+    """
+    # Define the lines
+    LineA1 = LineString([CPA1, BP1])
+    LineA2 = LineString([CPA2, BP2])
+    LineB1 = LineString([BP1, CPB1])
+    LineB2 = LineString([BP2, CPB2])
+    
+    # Find intersection of the two lines
+    inter1 = LineA1.intersection(LineA2)
+    inter2 = LineB1.intersection(LineB2)
+    intersection_free = inter1.is_empty and inter2.is_empty
+    if intersection_free: return False
 
-    Points should be (x, y) tuples.
-    Returns True if they intersect inside the polygon, else False.
-    """
-    # Define the polygon
-    polygon = Polygon([CPA1, CPA2, CPB2, CPB1])
-    
-    # Define the polylines
-    CP1 = LineString([CPA1, BP1, CPB1])
-    CP2 = LineString([CPA2, BP2, CPB2])
-    
-    # Find intersection
-    intersection = CP1.intersection(CP2)
-    
-    # Check if intersection exists and lies inside polygon
-    if not intersection.is_empty and polygon.contains(intersection):
-        return True
+   # Define the quadrilateral (the region of interest)
+    quad1 = Polygon([CPA1, BP1, BP2, CPA2])
+    quad2 = Polygon([CPB1, BP1, BP2, CPB2])
+    if inter1.within(quad1): return True
+    if inter2.within(quad2): return True
+
     return False

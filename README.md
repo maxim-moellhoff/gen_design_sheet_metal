@@ -9,8 +9,9 @@ THIS PROJECT IS STILL UNFINISHED!
 
 # How to install it
 
+0. Optional: Activate virtual environment with "source venv/bin/activate"
 1. Install dependencies
-2. pip install -e .
+2. run "pip install -e ."
 
 # How to use it
 
