@@ -15,7 +15,6 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
     standard_font_size = cfg.get('font_size', 20)
     
     
-    
     if cfg.get('Rectangle', False):
         for i, rect in enumerate(state.rectangles):
             # Extract the points as an ordered list of vertices (A–B–C–D)
@@ -39,10 +38,11 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
             plotter.add_mesh(plane_mesh, color="#8FAADC", opacity=0.4, show_edges=True)
 
     if cfg.get('Bends', True):
-        L = 2.0  # length of line in both directions from bend point, adjust as needed
-        for intersection in state.intersections:
-            point_on_line = intersection.get("point")
-            d = normalize(intersection.get("direction", np.array([1,0,0])))
+        L = 5.0  # length of line in both directions from bend point, adjust as needed
+        for i, flange in enumerate(state.flanges):
+            bend = flange['bend']
+            point_on_line = bend['point']
+            d = normalize(bend.get("direction", np.array([1,0,0])))
 
             if point_on_line is not None and d is not None:
                 # create line along bend direction
@@ -51,40 +51,47 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
 
                 # optionally label the bend
                 if cfg.get('debug_labels', False):
-                    plotter.add_point_labels(np.array([point_on_line]), ["Intersection"], font_size=standard_font_size, point_color="#E9DA38", text_color="black")
+                    plotter.add_point_labels(np.array([point_on_line]), ["Bend"], font_size=standard_font_size, point_color="#E9DA38", text_color="black")
 
 
     # --- Flanges and BP points ---
     # Corner Points
-    if cfg.get('Corner Points', True):
-        CPA1, CPA2, CPB1, CPB2 = state.corner_points
-        plotter.add_points(CPA1, color=cfg.get('BP1_color','red'), point_size=standard_point_size)
-        plotter.add_points(CPA2, color=cfg.get('BP2_color','blue'), point_size=standard_point_size)
-        plotter.add_points(CPB1, color=cfg.get('BP1_color','red'), point_size=standard_point_size)
-        plotter.add_points(CPB2, color=cfg.get('BP2_color','blue'), point_size=standard_point_size)
-        if cfg.get('debug_labels', True):
-            plotter.add_point_labels(CPA1, ["CPA1"], font_size=standard_font_size, point_color='red', text_color='red')
-            plotter.add_point_labels(CPA2, ["CPA2"], font_size=standard_font_size, point_color='blue', text_color='blue')
-            plotter.add_point_labels(CPB1, ["CPB1"], font_size=standard_font_size, point_color='red', text_color='red')
-            plotter.add_point_labels(CPB2, ["CPB2"], font_size=standard_font_size, point_color='blue', text_color='blue')
+    if cfg.get('Corner Points', True) and state.corner_points:
+        for i in range(len(state.corner_points)):
+            CP = state.corner_points[i]
+            #CPA1, CPA2, CPB1, CPB2 = state.corner_points
+            plotter.add_points(CP, color=cfg.get('BP1_color','red'), point_size=standard_point_size)
+            if cfg.get('debug_labels', True):
+                plotter.add_point_labels(CP, [f"CP{i}"], font_size=standard_font_size, point_color='red', text_color='red')
+        # plotter.add_points(CPA1, color=cfg.get('BP1_color','red'), point_size=standard_point_size)
+        # plotter.add_points(CPA2, color=cfg.get('BP2_color','blue'), point_size=standard_point_size)
+        # plotter.add_points(CPB1, color=cfg.get('BP1_color','red'), point_size=standard_point_size)
+        # plotter.add_points(CPB2, color=cfg.get('BP2_color','blue'), point_size=standard_point_size)
+        # if cfg.get('debug_labels', True):
+        #     plotter.add_point_labels(CPA1, ["CPA1"], font_size=standard_font_size, point_color='red', text_color='red')
+        #     plotter.add_point_labels(CPA2, ["CPA2"], font_size=standard_font_size, point_color='blue', text_color='blue')
+        #     plotter.add_point_labels(CPB1, ["CPB1"], font_size=standard_font_size, point_color='red', text_color='red')
+        #     plotter.add_point_labels(CPB2, ["CPB2"], font_size=standard_font_size, point_color='blue', text_color='blue')
 
     # BP points
-    if cfg.get('Bending Points', True):
-        BP1 = state.bends["BP1"]
-        BP2 = state.bends["BP2"]
-        plotter.add_points(BP1, color=cfg.get('BP1_color','red'), point_size=standard_point_size)
-        plotter.add_points(BP2, color=cfg.get('BP2_color','blue'), point_size=standard_point_size)
-        if cfg.get('debug_labels', True):
-            plotter.add_point_labels(BP1, ["BP1"], font_size=standard_font_size, point_color='red', text_color='red')
-            plotter.add_point_labels(BP2, ["BP2"], font_size=standard_font_size, point_color='blue', text_color='blue')
+    if cfg.get('Bending Points', True) and state.flanges:
+        for i, flange in enumerate(state.flanges):
+            BP1 = flange["BP1"]
+            BP2 = flange["BP2"]
+            plotter.add_points(BP1, color=cfg.get('BP1_color','red'), point_size=standard_point_size)
+            plotter.add_points(BP2, color=cfg.get('BP2_color','blue'), point_size=standard_point_size)
+            if cfg.get('debug_labels', True):
+                plotter.add_point_labels(BP1, ["BP1"], font_size=standard_font_size, point_color='red', text_color='red')
+                plotter.add_point_labels(BP2, ["BP2"], font_size=standard_font_size, point_color='blue', text_color='blue')
 
-    if cfg.get('Flange', True):
-        for pt_name in ["FPA1", "FPA2", "FPB1", "FPB2"]:
-                pt = np.array([state.bends[pt_name]])
-                color = cfg.get(f'{pt_name}_color', 'green')
-                plotter.add_points(pt, color=color, point_size=8)
+    if cfg.get('Flange', True) and state.flanges:
+        for i, FP in enumerate(state.flanges):
+                if not str(FP).startswith("FP"):
+                    continue
+                color = cfg.get(f'FP{i}_color', 'green')
+                plotter.add_points(FP, color=color, point_size=8)
                 if cfg.get('debug_labels', False):
-                    plotter.add_point_labels(pt, [f"{pt_name}"], font_size=standard_font_size, point_color=color, text_color=color)
+                    plotter.add_point_labels(FP, [f"FP{i}"], font_size=standard_font_size, point_color=color, text_color=color)
 
     if cfg.get('Elements', True):
         for i, element in enumerate(state.elements):

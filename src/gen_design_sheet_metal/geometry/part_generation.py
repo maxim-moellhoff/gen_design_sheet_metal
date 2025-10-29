@@ -4,14 +4,14 @@ import pyvista as pv
 from types import SimpleNamespace
 from gen_design_sheet_metal.geometry.utilities import normalize, closest_points_between_lines, perp_toward_plane
 
-def determine_fourth_point(rectangles):
+def determine_fourth_points(rectangles):
     """
     Given three points (A, B, C), compute fourth point D and reorder the points
     in circular order (A, B, D, C) so the rectangle is not twisted.
     """
     for rect in rectangles:
         A, B, C = rect["pointA"], rect["pointB"], rect["pointC"]
-
+        
         # Compute vectors
         AB = B - A
         AC = C - A
@@ -51,7 +51,7 @@ def calculate_planes(rectangles):
     """
     planes = []
 
-    for i, rect in enumerate(rectangles):
+    for _, rect in enumerate(rectangles):
         A, B, C = rect["pointA"], rect["pointB"], rect["pointC"]
 
         # Compute normal vector
@@ -67,9 +67,7 @@ def calculate_planes(rectangles):
 
     return planes
 
-def calculate_intersection(planes):
-    intersections = []
-
+def calculate_intersections(planes):
     n1, n2 = planes[0].orientation, planes[1].orientation
     p01, p02 = planes[0].position, planes[1].position
 
@@ -81,18 +79,18 @@ def calculate_intersection(planes):
 
     point = np.linalg.lstsq(A, b, rcond=None)[0]
 
-    intersections.append({
+    intersection = {
         "point": point,
         "direction": direction
-    })
-    return intersections
+    }
+    return intersection
 
 def collision_tab_bend(bend, rectangles):
     return False
 
 def create_bending_point(point0, point1, intersection):
-    point_on_intersection = intersection[0]['point']
-    direction_intersection = intersection[0]['direction']
+    point_on_intersection = intersection['point']
+    direction_intersection = intersection['direction']
     p0 = point0
     p1 = point1
     dir_AB = p1 - p0

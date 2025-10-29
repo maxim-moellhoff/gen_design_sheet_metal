@@ -1,5 +1,5 @@
 design_exploration:
-  single_bend: True
+  single_bend: False
   double_bend : True
 
 plot:
@@ -13,9 +13,6 @@ plot:
 
   point_size: 30
   font_size: 30
-
-  planeA_color: "#EC11E5"
-  planeB_color: "#F0AC53"
   
   BP1_color: "red"
   BP2_color: "blue"

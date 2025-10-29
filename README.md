@@ -1,4 +1,13 @@
-![Representative image of the results.](assets/images/example.png)
+<p align="center">
+  <img src="assets/images/1bend_01.png" alt="Screenshot 1" width="45%"/>
+  <img src="assets/images/2bend_01.png" alt="Screenshot 2" width="45%"/>
+</p>
+
+<p align="center">
+  <img src="assets/images/2bend_02.png" alt="Screenshot 3" width="45%"/>
+  <img src="assets/images/2bend_03.png" alt="Screenshot 4" width="45%"/>
+</p>
+
 
 THIS PROJECT IS STILL UNFINISHED!
 
