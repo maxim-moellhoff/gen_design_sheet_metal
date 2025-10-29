@@ -25,13 +25,13 @@ def main():
     rectangles_input = convert_to_float64(items=[rect0, rect1])
     rectangles = determine_fourth_points(rectangles_input)
     planes = calculate_planes(rectangles)
-    intersection = calculate_intersections(planes)
+    bend = calculate_intersections(planes)
 
     # ------ Design Exploration ------
-    state = State(rectangles, planes, intersection)
+    state = State(rectangles, planes, bends=bend)
     solutions = []
     
-    if not collision_tab_bend(intersection, rectangles) and cfg.get('design_exploration').get('single_bend', True):
+    if not collision_tab_bend(bend, rectangles) and cfg.get('design_exploration').get('single_bend', True):
         solutions.append(one_bend(state, solutions))
     
     solutions.append(two_bends(state, solutions))
