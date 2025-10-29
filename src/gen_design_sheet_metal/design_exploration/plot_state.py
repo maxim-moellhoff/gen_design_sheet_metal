@@ -15,7 +15,7 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
     standard_font_size = cfg.get('font_size', 20)
     
     
-    if cfg.get('Rectangle', False):
+    if cfg.get('Rectangle', False) and getattr(state, 'rectangles', None):
         for i, rect in enumerate(state.rectangles):
             # Extract the points as an ordered list of vertices (A–B–C–D)
             pts = np.array([rect["pointA"], rect["pointB"], rect["pointC"], rect["pointD"]])
@@ -30,14 +30,14 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
             plotter.add_mesh(rectangle_mesh, color="blue", opacity=0.6, show_edges=True)
 
 
-    if cfg.get('Planes', False):
+    if cfg.get('Planes', False) and getattr(state, 'planes', None):
         plane_size = 3  # adjust size of the plane
         for _, plane in enumerate(state.planes):
             # Create PyVista plane
             plane_mesh = pv.Plane(center=plane.position, direction=plane.orientation, i_size=plane_size, j_size=plane_size)
             plotter.add_mesh(plane_mesh, color="#8FAADC", opacity=0.4, show_edges=True)
 
-    if cfg.get('Bends', True):
+    if cfg.get('Bends', True) and getattr(state, 'flanges', None):
         L = 5.0  # length of line in both directions from bend point, adjust as needed
         for i, flange in enumerate(state.flanges):
             bend = flange['bend']
@@ -56,7 +56,7 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
 
     # --- Flanges and BP points ---
     # Corner Points
-    if cfg.get('Corner Points', True) and state.corner_points:
+    if cfg.get('Corner Points', True) and getattr(state, 'corner_points', None):
         for i in range(len(state.corner_points)):
             CP = state.corner_points[i]
             #CPA1, CPA2, CPB1, CPB2 = state.corner_points
@@ -74,7 +74,7 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
         #     plotter.add_point_labels(CPB2, ["CPB2"], font_size=standard_font_size, point_color='blue', text_color='blue')
 
     # BP points
-    if cfg.get('Bending Points', True) and state.flanges:
+    if cfg.get('Bending Points', True) and getattr(state, 'flanges', None):
         for i, flange in enumerate(state.flanges):
             BP1 = flange["BP1"]
             BP2 = flange["BP2"]
@@ -84,7 +84,7 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
                 plotter.add_point_labels(BP1, ["BP1"], font_size=standard_font_size, point_color='red', text_color='red')
                 plotter.add_point_labels(BP2, ["BP2"], font_size=standard_font_size, point_color='blue', text_color='blue')
 
-    if cfg.get('Flange', True) and state.flanges:
+    if cfg.get('Flange', True) and getattr(state, 'flanges', None):
         for i, FP in enumerate(state.flanges):
                 if not str(FP).startswith("FP"):
                     continue
@@ -93,7 +93,7 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
                 if cfg.get('debug_labels', False):
                     plotter.add_point_labels(FP, [f"FP{i}"], font_size=standard_font_size, point_color=color, text_color=color)
 
-    if cfg.get('Elements', True):
+    if cfg.get('Elements', True) and getattr(state, 'elements', None):
         for i, element in enumerate(state.elements):
             plotter.add_mesh(
                 element,
