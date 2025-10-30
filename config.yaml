@@ -1,14 +1,15 @@
 design_exploration:
-  single_bend: True
+  single_bend: False
   double_bend : True
 
 plot:
   Rectangle: True
-  Corner Points: True
+  Corner Points: False
   Planes: False
   Bends: True
   Bending Points: True
   Flange: True
+  Flange Points: True
   Elements: True
 
   point_size: 30

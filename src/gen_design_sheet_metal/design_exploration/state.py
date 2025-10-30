@@ -1,12 +1,13 @@
 import copy
 
 class State:
-    def __init__(self, rectangles, planes, bends, corner_points=None, flanges=None, elements=None):
+    def __init__(self, rectangles, planes, bends, corner_points=None, flanges=None, points=None, elements=None):
         self.rectangles = rectangles
         self.planes = planes
         self.bends = bends
         self.corner_points = corner_points or []
         self.flanges = flanges or []
+        self.points = points or {}
         self.elements = elements or []
         # self.bending_points = bending_points or []
         # self.tabs = tabs or []
@@ -19,6 +20,7 @@ class State:
             bends=copy.deepcopy(self.bends),
             corner_points=copy.deepcopy(self.corner_points),
             flanges=copy.deepcopy(self.flanges),
+            points = copy.deepcopy(self.points),
             elements=copy.deepcopy(self.elements)
             # bending_points=copy.deepcopy(self.bending_points),
             # tabs=copy.deepcopy(self.tabs),
