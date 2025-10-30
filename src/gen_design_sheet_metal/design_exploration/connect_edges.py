@@ -53,17 +53,13 @@ def two_bends(state, solutions):
     planeA = state.planes[0]
     planeC = state.planes[1]
 
-    rectA_points = list(rectangles[0].values())
-    rectC_points = list(rectangles[1].values())
+    rectA_corners = list(rectangles[0].values())
+    rectC_corners = list(rectangles[1].values())
 
-    rectA_combinations = list(itertools.permutations(rectA_points, 2))
-    rectC_combinations = list(itertools.permutations(rectC_points, 2))
-
-
-    for pairA in rectA_combinations:
-        BPA1 = pairA[0]
-        BPA2 = pairA[1]
-        for i, BPC0 in enumerate(rectC_points):
+    for i, j in [(0,1), (1,2), (2,3), (3,0), (1,0), (2,1), (3,2), (0,3)]:     
+        BPA1 = rectA_corners[i]
+        BPA2 = rectA_corners[j]
+        for i, BPC0 in enumerate(rectC_corners):
             triangle = {"pointA": BPA1, "pointB": BPA2, "pointC": BPC0}
             rectangle = determine_fourth_points([triangle])
 
@@ -86,8 +82,8 @@ def two_bends(state, solutions):
             FPAB2 = BPA2 - min_flange_width/2 * dir_vector
             
             # create BP1 and BP2 for Side C
-            CPC1 = rectC_points[(i + 1) % 4]
-            CPC2 = rectC_points[(i - 1) % 4]
+            CPC1 = rectC_corners[(i + 1) % 4]
+            CPC2 = rectC_corners[(i - 1) % 4]
             create_bending_point(CPC1, FPAB1, bendBC)
             create_bending_point(CPC2, FPAB2, bendBC)
 
@@ -103,12 +99,12 @@ def two_bends(state, solutions):
             new_state.flanges.append({"bend_id": 1, "bend": bendBC, "BP1": BPC1, "BP2": BPC2,
                                       "FPBC1": FPBC1, "FPBC2": FPBC2, "FPC1": FPC1, "FPC2": FPC2})
 
-            new_state.elements.append(turn_points_into_element(rectA_points))
+            new_state.elements.append(turn_points_into_element(rectA_corners))
             new_state.elements.append(turn_points_into_element([BPA1, FPAB1, FPAB2, BPA2]))
             new_state.elements.append(turn_points_into_element([FPAB2, FPBC1, FPBC2, FPAB1]))
             new_state.elements.append(turn_points_into_element([FPBC1, BPC1, BPC2, FPBC2]))
             new_state.elements.append(turn_points_into_element([BPC1, CPC1, CPC2, BPC2]))
-            state.elements.append(turn_points_into_element(rectC_points))
+            state.elements.append(turn_points_into_element(rectC_corners))
 
             new_state.points = {"CPA1": CPA1, "CPA2": CPA2,
                                 "BPA1": BPA1, "BPA2":BPA2, 
@@ -118,8 +114,8 @@ def two_bends(state, solutions):
 
             solutions.append(new_state)
 
-    for pairB in rectC_combinations:
-        for BPA1 in rectA_points:
-            continue
+    # for pairB in rectC_combinations:
+    #     for BPA1 in rectA_corners:
+    #         continue
 
     return solutions
