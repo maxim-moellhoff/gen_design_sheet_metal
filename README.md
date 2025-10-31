@@ -16,6 +16,7 @@ The user gives two rectangles as an input, and the program tries to find differe
 
 # How to run it
 After opening the folder in an IDE run the following commands in the console
+
 0. python3 -m venv ./venv
 1. source venv/bin/activate
 2. pip install -e .
