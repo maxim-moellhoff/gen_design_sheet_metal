@@ -26,3 +26,16 @@ THIS PROJECT IS STILL UNFINISHED!
 
 In user_input.py you can provide the input values you want.
 In config.yaml you can configure what should get plotted.
+
+# Explanation of Abbreviations
+
+BP = Bending Point
+CP = Corner Point
+FP = Flange Point
+
+_A  = Part of Tab A
+_AB = Connect Tab A and B
+
+_0 = Middle
+_1 = Side 1
+_2 = Side 2
