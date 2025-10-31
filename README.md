@@ -15,13 +15,16 @@ THIS PROJECT IS STILL UNFINISHED!
 The user gives two rectangles as an input, and the program tries to find different ways to connect those two rectangles in way, that is manufacturable. Solutions are generated in two ways. Either by finding the intersection of the two planes and connecting them, or by selecting 2 points from one rectangle and 1 point from the other, and creating an additional tab on that plane.
 
 # How to run it
-After opening the folder in an IDE run the following commands in the console
+0. Open the main folder in an IDE or in the console
+1. Create a virtual environment
+   `python3 -m venv ./venv`
+2. Activate the virtual environment
+   `source venv/bin/activate`
+3. Install dependencies (the . at the end is important)
+   `pip install -e .`
+4. Run the program
+   `python -m gen_design_sheet_metal`
 
-0. python3 -m venv ./venv
-1. source venv/bin/activate
-2. pip install -e .
-( THE . AT THE END IS IMORTANT)
-3. python -m gen_design_sheet_metal
 
 # How to use it
 
