@@ -33,8 +33,8 @@ def main():
     
     if not collision_tab_bend(bend, rectangles) and cfg.get('design_exploration').get('single_bend', True):
         solutions.append(one_bend(state, solutions))
-    
-    solutions.append(two_bends(state, solutions))
+    if cfg.get('design_exploration').get('double_bend', True):
+        solutions.append(two_bends(state, solutions))
 
     print("--- %s seconds ---" % (time.time() - start_time))
     print(f"Found {len(solutions)-1} solutions")

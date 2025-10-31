@@ -57,33 +57,44 @@ def two_bends(state, solutions):
     rectC_corners = list(rectangles[1].values())
 
     for i, j in [(0,1), (1,2), (2,3), (3,0), (1,0), (2,1), (3,2), (0,3)]:     
-        BPA1 = rectA_corners[i]
-        BPA2 = rectA_corners[j]
-        for i, BPC0 in enumerate(rectC_corners):
-            triangle = {"pointA": BPA1, "pointB": BPA2, "pointC": BPC0}
-            rectangle = determine_fourth_points([triangle])
-
+        CPA1 = rectA_corners[i]
+        CPA2 = rectA_corners[j]
+        for i, CPC0 in enumerate(rectC_corners):
+            CPC1 = rectC_corners[(i + 1) % 4]
+            CPC2 = rectC_corners[(i - 1) % 4]
+            rectCmid = (CPC1 + CPC2) / 2
             new_state = state.copy()
-            CPA1 = BPA1
-            CPA2 = BPA2
-            CPC0 = BPC0
+            new_state.corner_points.extend([CPA1, CPA2, CPC0, CPC1, CPC2])
             
-            new_state.corner_points.extend([CPA1,CPA2,CPC0])
-            
-            planeB = calculate_planes(rectangles=rectangle)[0]
-            bendAB = calculate_intersections(planes=[planeA, planeB])
+            CP_triangle = {"pointA": CPA1, "pointB": CPA2, "pointC": CPC0}
+            CP_planeB = calculate_planes(rectangles=[CP_triangle])[0]
+            CP_bendBC = calculate_intersections(planes=[CP_planeB, planeC])
+            dir_vector_BC = np.cross(planeC.orientation, CP_bendBC["direction"]) 
+            dir_vector_BC /= np.linalg.norm(dir_vector_BC)
+
+            if np.dot(dir_vector_BC, CPC0 - rectCmid) > 0:
+                dir_vector_BC *= -1
+
+            CP_bendBC["point"] = CP_bendBC["point"] - min_flange_width * dir_vector_BC
+
+            BPC0 = CPC0 - min_flange_width * dir_vector_BC
+            BPA1 = CPA1
+            BPA2 = CPA2
+
+            BP_triangle = {"pointA": BPA1, "pointB": BPA2, "pointC": BPC0}
+            planeB = calculate_planes(rectangles=[BP_triangle])[0]
             bendBC = calculate_intersections(planes=[planeB, planeC])
+            
+            bendAB = calculate_intersections(planes=[planeA, planeB])
             
             dir_vector = np.cross(planeB.orientation, bendAB["direction"])
             dir_vector /= np.linalg.norm(dir_vector)
             
             # creat Flange points for side A on plane B
-            FPAB1 = BPA1 - min_flange_width/2 * dir_vector
-            FPAB2 = BPA2 - min_flange_width/2 * dir_vector
+            FPAB1 = BPA1 - min_flange_width * dir_vector
+            FPAB2 = BPA2 - min_flange_width * dir_vector
             
             # create BP1 and BP2 for Side C
-            CPC1 = rectC_corners[(i + 1) % 4]
-            CPC2 = rectC_corners[(i - 1) % 4]
             create_bending_point(CPC1, FPAB1, bendBC)
             create_bending_point(CPC2, FPAB2, bendBC)
 
@@ -103,13 +114,15 @@ def two_bends(state, solutions):
             new_state.elements.append(turn_points_into_element([BPA1, FPAB1, FPAB2, BPA2]))
             new_state.elements.append(turn_points_into_element([FPAB2, FPBC1, FPBC2, FPAB1]))
             new_state.elements.append(turn_points_into_element([FPBC1, BPC1, BPC2, FPBC2]))
-            new_state.elements.append(turn_points_into_element([BPC1, CPC1, CPC2, BPC2]))
+            new_state.elements.append(turn_points_into_element([BPC1, FPC1, FPC2, BPC2]))
+            new_state.elements.append(turn_points_into_element([FPC1, CPC1, CPC2, FPC2]))
             state.elements.append(turn_points_into_element(rectC_corners))
 
             new_state.points = {"CPA1": CPA1, "CPA2": CPA2,
                                 "BPA1": BPA1, "BPA2":BPA2, 
                                 "FPAB1":FPAB1, "FPAB2":FPAB2, "FPBC1":FPBC1, "FPBC2":FPBC2, 
                                 "BPC1":BPC1, "BPC2":BPC2, 
+                                "FPC1":FPC1, "FPC2":FPC2,
                                 "CPC1":CPC1, "CPC2":CPC2}
 
             solutions.append(new_state)

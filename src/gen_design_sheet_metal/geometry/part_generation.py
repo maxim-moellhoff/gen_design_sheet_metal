@@ -112,10 +112,9 @@ def calculate_flange_points(BP1, BP2, planeA, planeB, flange_width=min_flange_wi
     bend_dir = normalize(BP2 - BP1)
     perpA = perp_toward_plane(planeA, BP0, bend_dir)
     perpB = perp_toward_plane(planeB, BP0, bend_dir)
-    half = flange_width / 2.0
 
-    FPA1, FPA2 = BP1 + perpA * half, BP2 + perpA * half
-    FPB1, FPB2 = BP1 + perpB * half, BP2 + perpB * half
+    FPA1, FPA2 = BP1 + perpA * flange_width, BP2 + perpA * flange_width
+    FPB1, FPB2 = BP1 + perpB * flange_width, BP2 + perpB * flange_width
 
     return FPA1, FPA2, FPB1, FPB2
 

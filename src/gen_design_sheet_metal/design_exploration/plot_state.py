@@ -4,6 +4,8 @@ import numpy as np
 from gen_design_sheet_metal.design_rules import min_dist_mount_bend
 from gen_design_sheet_metal.geometry.part_generation import turn_points_into_element
 
+import vtk
+
 def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solutions=None):
     """
     Unified plotting function for flanges, tabs, BP points, and optional plane/debug info.
@@ -33,8 +35,6 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
         for i in range(len(state.corner_points)):
             CP = state.corner_points[i]
             plotter.add_points(CP, color=cfg.get('BP1_color','red'), point_size=standard_point_size)
-            # if cfg.get('debug_labels', True):
-            #     plotter.add_point_labels(CP, [f"CP{i}"], font_size=standard_font_size, point_color='red', text_color='red')
 
     if cfg.get('Planes', False) and getattr(state, 'planes', None):
         plane_size = 3  # adjust size of the plane
@@ -48,16 +48,10 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
             bend = flange['bend']
             point_on_line = bend['point']
             d = normalize(bend.get("direction", np.array([1,0,0])))
-
             if point_on_line is not None and d is not None:
                 # create line along bend direction
                 line = pv.Line(point_on_line - d * L, point_on_line + d * L)
                 plotter.add_mesh(line, color=color_bend, line_width=8)
-
-                # # optionally label the bend
-                # if cfg.get('debug_labels', False):
-                #     plotter.add_point_labels(np.array([point_on_line]), ["Bend"], font_size=standard_font_size, point_color="#E9DA38", text_color="black")
-
 
     # BP points
     if cfg.get('Bending Points', True) and getattr(state, 'flanges', None):
@@ -66,25 +60,14 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
             BP2 = flange["BP2"]
             plotter.add_points(BP1, color=color_BP1, point_size=standard_point_size)
             plotter.add_points(BP2, color=color_BP2, point_size=standard_point_size)
-            # if cfg.get('debug_labels', True):
-            #     plotter.add_point_labels(BP1, ["BP1"], font_size=standard_font_size, text_color=color_BP1)
-            #     plotter.add_point_labels(BP2, ["BP2"], font_size=standard_font_size, text_color=color_BP2)
-
-    # Flange Points
-    # if cfg.get('Flange Points', True) and getattr(state, 'flanges', None):
-    #     for i, FP in enumerate(state.flanges):
-    #             if not str(FP).startswith("FP"):
-    #                 continue
-    #             color = cfg.get(f'FP{i}_color', 'green')
-    #             plotter.add_points(FP, color=color, point_size=8)
-    #             if cfg.get('debug_labels', False):
-    #                 plotter.add_point_labels(FP, [f"FP{i}"], font_size=standard_font_size, point_color=color, text_color=color)
-
+    
     if cfg.get('Flange', True) and getattr(state, 'elements', None):
         pts = state.points
-        flangeAB = turn_points_into_element([pts["FPAB1"], pts["FPAB2"], pts["BPA2"], pts["BPA1"]])
-        flangeBC = turn_points_into_element([pts["FPBC1"], pts["FPBC2"], pts["BPC2"], pts["BPC1"]])
-        for element in [flangeAB, flangeBC]:
+        flanges = []
+        flanges.append(turn_points_into_element([pts["FPAB1"], pts["FPAB2"], pts["BPA2"], pts["BPA1"]]))
+        flanges.append(turn_points_into_element([pts["FPBC1"], pts["FPBC2"], pts["BPC2"], pts["BPC1"]]))
+        flanges.append(turn_points_into_element([pts["BPC1"], pts["BPC2"], pts["FPC2"], pts["FPC1"]]))
+        for element in flanges:
             plotter.add_mesh(
                 element,
                 color=color_flange,
@@ -117,12 +100,10 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
     # Solution ID
     if solution_idx is not None and len_solutions is not None:
         counter_text = f"Solution: {solution_idx}/{len_solutions}"
-        # position options: upper_left, upper_right, lower_left, lower_right
         plotter.add_text(counter_text, position="upper_left", font_size=20, color="black", shadow=True)
 
     # --- Finish plot ---
     plotter.show_grid()
-    # plotter.camera_position = 'iso'
     plotter.render()
 
 def plot_state(plotter, plot_cfg, solutions):
@@ -133,7 +114,6 @@ def plot_state(plotter, plot_cfg, solutions):
     def show_solution(idx):
         plotter.clear()
         state = solutions[idx]
-        #mesh = assemble_mesh(state)
         plot_elements(state, plotter=plotter, cfg=plot_cfg, solution_idx=solution_idx[0]+1, len_solutions=len(solutions))
 
     def key_press_callback(key):
