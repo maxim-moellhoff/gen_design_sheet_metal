@@ -23,6 +23,23 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
     color_bend = "#ffb000"
     color_BP1 = "#dc267f"
     color_BP2 = "#26dc83"
+
+    if cfg.get('Legend', True):
+        legend_text = """
+    BP = Bending Point
+    CP = Corner Point
+    FP = Flange Point
+
+    _A  = Part of Tab A
+    _AB = Connect Tab A and B
+
+    _0 = Middle
+    _1 = Side 1
+    _2 = Side 2
+            """
+
+        # Add the text box to the plot
+        plotter.add_text(legend_text, position="lower_left", font_size=15, color="black")
     
     if cfg.get('Rectangle', False) and getattr(state, 'rectangles', None):
         for i, rect in enumerate(state.rectangles):
