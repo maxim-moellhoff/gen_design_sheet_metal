@@ -45,15 +45,18 @@ In config.yaml you can configure what should get plotted.
 - _2 = Side 2
 
 # Development Goals
-
-- [x] Generate solutions for 1 bend
-- [x] Generate solutions for 2 bend
-- [x] Improve flange visuals
-- [ ] Filter solutions that are unsuitable
-- [ ] Minimum distance from bend
-- [ ] Introduce mounts
-- [ ] Extend to multiple squares
-- [ ] Generate solutions by separating surfaces
-
-- [x] Extend installation guide
-- [x] Explain function more precisely
+- Part generation
+	- [x] Generate solutions for 1 bend
+	- [x] Generate solutions for 2 bend
+	- [x] Improve flange visuals
+	- [ ] Filter solutions that are unsuitable
+	- [ ] Introduce mounts
+	- [ ] Introduce rule "Minimum distance mount from bend"
+	- [ ] Extend part generation to multiple squares
+	- [ ] Generate solutions by separating surfaces
+- Simulation
+	- [ ] Connect to Onshape API
+	- [ ] Check parts with TruTopsBoost
+- README
+	- [x] Extend installation guide
+	- [x] Explain function more precisely
