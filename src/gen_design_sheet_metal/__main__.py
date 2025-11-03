@@ -4,13 +4,15 @@ start_time = time.time()
 import pyvista as pv
 import yaml
 
-from user_input import rect0, rect1
+from config.user_input import rect0, rect1
 from .design_exploration.state import State
+from .design_exploration.connect_edges import one_bend, two_bends
 from .design_exploration.plot_state import plot_state
+
 from .geometry.utilities import convert_to_float64
 from .geometry.part_generation import determine_fourth_points, calculate_planes, calculate_intersections, collision_tab_bend
-from .design_exploration.connect_edges import one_bend, two_bends
-with open("config.yaml") as f:
+
+with open("config/config.yaml") as f:
     cfg = yaml.load(f, Loader=yaml.FullLoader)
 
 import matplotlib

@@ -77,8 +77,23 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
             BP2 = flange["BP2"]
             plotter.add_points(BP1, color=color_BP1, point_size=standard_point_size)
             plotter.add_points(BP2, color=color_BP2, point_size=standard_point_size)
-    
-    if cfg.get('Flange', True) and getattr(state, 'elements', None):
+
+    # Plot Single Bend Flanges
+    if cfg.get('Flange', True) and getattr(state, 'flanges', None) and getattr(state, 'single_bend', True):
+        pts = state.points
+        flanges = []
+        flanges.append(turn_points_into_element([pts["FPA1"], pts["FPA2"], pts["BP2"], pts["BP1"]]))
+        flanges.append(turn_points_into_element([pts["FPB1"], pts["FPB2"], pts["BP2"], pts["BP1"]]))
+        for element in flanges:
+            plotter.add_mesh(
+                element,
+                color=color_flange,
+                opacity=0.8,
+                show_edges=True,
+                label=f"Element {i}"
+            )
+    # Plot Double Bend Flanges
+    if cfg.get('Flange', True) and getattr(state, 'flanges', None) and not getattr(state, 'single_bend', True):
         pts = state.points
         flanges = []
         flanges.append(turn_points_into_element([pts["FPAB1"], pts["FPAB2"], pts["BPA2"], pts["BPA1"]]))

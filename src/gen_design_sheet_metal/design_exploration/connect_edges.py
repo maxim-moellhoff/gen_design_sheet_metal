@@ -8,6 +8,7 @@ import numpy as np
 def one_bend(state, solutions):
     rectangles = state.rectangles
     bend = state.bends
+    state.single_bend = True
 
     rectA_points = list(rectangles[0].values())
     rectB_points = list(rectangles[1].values())
@@ -42,6 +43,11 @@ def one_bend(state, solutions):
             new_state.elements.append(turn_points_into_element([CPB1, FPB1, FPB2, CPB2]))
             new_state.elements.append(turn_points_into_element(rectB_points))
 
+            new_state.points = {"CPA1": CPA1, "CPA2": CPA2,
+                                "BP1": BP1, "BP2":BP2, 
+                                "FPA1":FPA1, "FPA2":FPA2, "FPB1":FPB1, "FPB2":FPB2, 
+                                "CPB1":CPB1, "CPB2":CPB2}
+
             solutions.append(new_state)
 
         return solutions
@@ -49,6 +55,7 @@ def one_bend(state, solutions):
 # If there are two bends, there are three planes, which are called A, B and C
 # The first rectangle the user provides is A, and the second one is C, and the one in between B
 def two_bends(state, solutions):
+    state.single_bend = False
     rectangles = state.rectangles
     planeA = state.planes[0]
     planeC = state.planes[1]
