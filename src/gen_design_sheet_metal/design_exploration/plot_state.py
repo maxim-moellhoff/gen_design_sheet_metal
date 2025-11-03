@@ -40,7 +40,12 @@ def plot_elements(state, plotter=None, cfg=None, solution_idx=None, len_solution
 
         # Add the text box to the plot
         plotter.add_text(legend_text, position="lower_left", font_size=15, color="black")
-    
+
+
+    if getattr(state, 'comment', None): # FOR DEBUGGING
+        plotter.add_text(state.comment[0], position="lower_left", font_size=15, color="black")
+
+
     if cfg.get('Rectangle', False) and getattr(state, 'rectangles', None):
         for i, rect in enumerate(state.rectangles):
             pts = np.array([rect["pointA"], rect["pointB"], rect["pointC"], rect["pointD"]])

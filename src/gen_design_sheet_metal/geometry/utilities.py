@@ -56,26 +56,52 @@ def perp_toward_plane(plane, BP0, bend_dir):
 
 from shapely.geometry import LineString, Polygon
 
-def check_lines_cross(CPA1, CPA2, CPB1, CPB2, BP1, BP2):
+def check_lines_cross(CP, FP, BP):
     """
-    Returns true, if the input is cross free, and therefore valid
+    Returns true, if the input has lines crossing, and therefore is invalid
     """
     # Define the lines
-    LineA1 = LineString([CPA1, BP1])
-    LineA2 = LineString([CPA2, BP2])
-    LineB1 = LineString([BP1, CPB1])
-    LineB2 = LineString([BP2, CPB2])
+    LineA1 = LineString([CP["CPA1"], FP["FPA1"]])
+    LineA2 = LineString([CP["CPA2"], FP["FPA2"]])
+    LineB1 = LineString([CP["CPB1"], FP["FPB1"]])
+    LineB2 = LineString([CP["CPB2"], FP["FPB2"]])
     
     # Find intersection of the two lines
-    inter1 = LineA1.intersection(LineA2)
-    inter2 = LineB1.intersection(LineB2)
-    intersection_free = inter1.is_empty and inter2.is_empty
+    interA = LineA1.intersection(LineA2)
+    interB = LineB1.intersection(LineB2)
+
+    intersection_free = interA.is_empty and interB.is_empty
     if intersection_free: return False
 
    # Define the quadrilateral (the region of interest)
-    quad1 = Polygon([CPA1, BP1, BP2, CPA2])
-    quad2 = Polygon([CPB1, BP1, BP2, CPB2])
-    if inter1.within(quad1): return True
-    if inter2.within(quad2): return True
+    quadA = Polygon([CP["CPA1"], FP["FPA1"], FP["FPA2"], CP["CPA2"]])
+    quadB = Polygon([CP["CPB1"], FP["FPB1"], FP["FPB2"], CP["CPB2"]])
+    if interA.within(quadA) or interB.within(quadB): 
+        return True
 
     return False
+
+def cord_lines_cross(CP, FP, BP): # FOR DEBUGGING
+    """
+    Returns true, if the input has lines crossing, and therefore is invalid
+    """
+    # Define the lines
+    LineA1 = LineString([CP["CPA1"], FP["FPA1"]])
+    LineA2 = LineString([CP["CPA2"], FP["FPA2"]])
+    LineB1 = LineString([CP["CPB1"], FP["FPB1"]])
+    LineB2 = LineString([CP["CPB2"], FP["FPB2"]])
+    
+    # Find intersection of the two lines
+    interA = LineA1.intersection(LineA2)
+    interB = LineB1.intersection(LineB2)
+
+    intersection_free = interA.is_empty and interB.is_empty
+    if intersection_free: return False
+
+   # Define the quadrilateral (the region of interest)
+    quadA = Polygon([CP["CPA1"], FP["FPA1"], FP["FPA2"], CP["CPA2"]])
+    quadB = Polygon([CP["CPB1"], FP["FPB1"], FP["FPB2"], CP["CPB2"]])
+    if interA.within(quadA):
+        return interA
+    if interB.within(quadB):
+        return interB

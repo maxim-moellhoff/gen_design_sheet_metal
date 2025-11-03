@@ -1,7 +1,7 @@
 import copy
 
 class State:
-    def __init__(self, rectangles, planes, bends, single_bend=None, corner_points=None, flanges=None, points=None, elements=None):
+    def __init__(self, rectangles, planes, bends, single_bend=None, corner_points=None, flanges=None, points=None, elements=None, comment=None):
         self.rectangles = rectangles
         self.planes = planes
         self.bends = bends
@@ -10,6 +10,7 @@ class State:
         self.flanges = flanges or []
         self.points = points or {}
         self.elements = elements or []
+        self.comment = comment or [] # FOR DEBUGGING
 
 
     def copy(self):

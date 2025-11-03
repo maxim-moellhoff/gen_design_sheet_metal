@@ -1,6 +1,6 @@
 import itertools
 from gen_design_sheet_metal.geometry.part_generation import calculate_planes, calculate_intersections, create_bending_point, calculate_flange_points, turn_points_into_element, determine_fourth_points
-from gen_design_sheet_metal.geometry.utilities import check_lines_cross, normalize
+from gen_design_sheet_metal.geometry.utilities import check_lines_cross, normalize, cord_lines_cross
 from gen_design_sheet_metal.design_rules import min_flange_width
 
 import numpy as np
@@ -16,24 +16,35 @@ def one_bend(state, solutions):
     rectA_combinations = list(itertools.permutations(rectA_points, 2))
     rectB_combinations = list(itertools.permutations(rectB_points, 2))
 
-    state.elements.append(turn_points_into_element(rectA_points))
+    
 
     for pairA in rectA_combinations:
         for pairB in rectB_combinations:
             new_state = state.copy()
+            new_state.elements.append(turn_points_into_element(rectA_points))
+            
             CPA1 = pairA[0]
             CPA2 = pairA[1]
             CPB1 = pairB[0]
             CPB2 = pairB[1]
+            CP = {"CPA1": CPA1, "CPA2": CPA2, "CPB1": CPB1, "CPB2": CPB2}
             
             new_state.corner_points.extend([CPA1,CPA2,CPB2,CPB1])
             
             BP1 = create_bending_point(CPA1, CPB1, bend)
             BP2 = create_bending_point(CPA2, CPB2, bend)
+            BP = {"BP1": BP1, "BP2": BP2}
 
-            if check_lines_cross(CPA1, CPA2, CPB1, CPB2, BP1, BP2): continue
 
             FPA1, FPA2, FPB1, FPB2 = calculate_flange_points(BP1, BP2, planeA=new_state.planes[0], planeB=new_state.planes[1])
+            FP = {"FPA1": FPA1, "FPA2": FPA2, "FPB1": FPB1, "FPB2": FPB2}
+
+            inter = None
+            if check_lines_cross(CP, FP, BP): 
+                #continue
+                inter = cord_lines_cross(CP, FP, BP) # FOR DEBUGGING
+                new_state.comment.append("Bad")  # FOR DEBUGGING
+            else: new_state.comment.append("Good") # FOR DEBUGGING
 
             new_state.flanges.append({"bend_id": 0, "bend": bend, "BP1": BP1, "BP2": BP2, 
                                     "FPA1": FPA1, "FPA2": FPA2, "FPB1": FPB1, "FPB2": FPB2})
@@ -47,6 +58,8 @@ def one_bend(state, solutions):
                                 "BP1": BP1, "BP2":BP2, 
                                 "FPA1":FPA1, "FPA2":FPA2, "FPB1":FPB1, "FPB2":FPB2, 
                                 "CPB1":CPB1, "CPB2":CPB2}
+            # if inter is not None: # FOR DEBUGGING
+            #     new_state.points["inter"] = inter
 
             solutions.append(new_state)
 
